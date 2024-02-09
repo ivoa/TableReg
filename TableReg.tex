@@ -1,8 +1,8 @@
 \documentclass[11pt,a4paper]{ivoa}
 \input tthdefs
 
-\title{Registering TAP-Queriable Table Conforming to a Particular
-Standard}
+\title{TableReg: Registering TAP-Queriable Tables Conforming to Standard
+Schemas}
 
 % see ivoatexDoc for what group names to use here; use \ivoagroup[IG] for
 % interest groups.
@@ -10,12 +10,23 @@ Standard}
 
 \author[http://www.ivoa.net/cgi-bin/twiki/bin/view/IVOA/MarkusDemleitner]{Markus Demleitner}
 
+\editor{Markus Demleitner}
+
 \previousversion{This is the first public release}
 
 
 \begin{document}
 \begin{abstract}
-???? Abstract ????
+An increasingly popular pattern in the Virtual Observatory, pioneered
+by Obscore, is to define a schema for one or more tables in a database
+and then publish data by making it accessible in tables conforming to
+that schema in TAP services.  This document discusses how such resources
+should be represented in the VO Registry to facilitate data discovery,
+in particular global, all-VO data discovery.
+
+It turns out that the existing registration patterns for Obscore,
+RegTAP, and EPN-TAP require some adjustments.  The document therefore
+also proposes transition strategies for these.
 \end{abstract}
 
 
@@ -36,7 +47,92 @@ infrastructure that enable VO applications.
 
 \section{Introduction}
 
-???? Write something ????
+Beginning with Obscore 1.0 \citep{2011ivoa.spec.1028T}, an increasing
+number of Virtual Observatory standards at their core just define a
+table schema -- understood here as a well-defined set of columns within
+one or more relations -- and rely on TAP \citep{2019ivoa.spec.0927D} to
+let clients actually run queries.  Standards of this type include:
+
+\begin{itemize}
+\item Obscore \citep{2017ivoa.spec.0509L} -- a table for metadata of
+observational data products
+\item RegTAP \citep{2019ivoa.spec.1011D} -- a 13-table schema with
+metadata of VO resources
+\item ObsLocTAP \citep{2021ivoa.spec.0724S} -- a table schema to
+communicate plans for observations and metadata of completed
+observations
+\item EPN-TAP \citep{2022ivoa.spec.0822E} -- a table schema for solar
+system data
+\end{itemize}
+
+More such standards are currently being developed, such as LineTAP
+\citep{wd:linetap23} and the Obscore extension for radio data.
+
+Of course, resources complying to these standards must be made
+discoverable to be useful.  Both Obscore and RegTAP have employed the
+\xmlel{dataModel} element specifically introduced into TAPRegExt
+\citep{2012ivoa.spec.0827D} to declare the presence of tables adhering
+to a standard schema in a TAP service.
+
+Both Obscore and RegTAP are singletons with fixed names, i.e., once one
+has discovered a TAP service ``supporting'' a data model, it is clear
+how to query it.  However, even for these, the \xmlel{dataModel}-scheme
+has severe shortcomings:
+
+\begin{enumerate}
+\item Lack of resource metadata: In resource records located during
+discovery, the global VOResource metadata (title, authors, and perhaps
+most importantly coverage in space, time and spectrum) are these of the
+TAP service, which the tables may share with any number of other tables.
+
+\item Unclear relationships: In particular for Obscore, a severe
+shortcoming is that data collection records can only generically say
+that they are served by the TAP service (cf.~\citet{2019ivoa.spec.0520D}
+for the general scheme of relating data collections and services).  From
+that, clients cannot deduce whether the data is available through, say,
+obscore, or only in some custom table.
+
+\item Logic: Adherence to a data model simply is not a property of a
+TAP service.  It is a property of a specific table or schema.
+\end{enumerate}
+
+EPN-TAP then employed the table-in-TAP scheme without the constraint to
+a singleton; since each data collection has an EPN-TAP table of its own,
+the discovery process somehow also had to yield a table name.  As a
+solution, the standard forsees using the table's \xmlel{utype} field in
+the VODataService \citep{2010ivoa.spec.1202P} \xmlel{tableset}.
+
+This mode of discovery was subsequently also employed in ObsLocTAP and
+LineTAP.  It still has a drawback, though: Clients discovering a service
+with a \xmlel{table} (or \xmlel{schema} in the case of RegTAP) with the
+bespoke \xmlel{utype} have a hard time determining whether what they
+have found is the data collection's record (and hence the global
+metadata pertains to the data collection itself) or the record of the
+TAP service serving the data collection (in which case the global
+metadata pertains to the TAP service and will be essentially unrelated
+to the data collection in question).
+
+This note remedies that by prescribing that for resource records for
+standard-compliant tables, the resource type \xmlel{vs:CatalogResource}
+must be used.
+
+In Sect.~\ref{sect:norms}, we review the proposed scheme and give
+boilerplate text to include in standards following it.  One reason to
+introduce the scheme is to enable expressing inclusion relationships
+between resources for the benefit of clients doing global discovery.
+Sect.~\ref{sect:rels} discusses this mechanism in more detail.  Finally,
+Sect.~\ref{sect:transition} addresses the question of how to transition
+from what the standards currently say (and the services and clients
+implement) to a VO adopting the scheme proposed here.
+
+\section{Registering and Discovering Standard Tables}
+\label{sect:norms}
+
+\section{Expressing Relationships Between Tables}
+\label{sect:rels}
+
+\section{Transitioning to a TableReg World}
+\label{sect:transition}
 
 
 \appendix
@@ -49,7 +145,7 @@ No previous versions yet.
 
 % NOTE: IVOA recommendations must be cited from docrepo rather than ivoabib
 % (REC entries there are for legacy documents only)
-\bibliography{ivoatex/ivoabib,ivoatex/docrepo}
+\bibliography{ivoatex/ivoabib,ivoatex/docrepo,local}
 
 
 \end{document}
