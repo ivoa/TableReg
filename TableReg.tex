@@ -1,6 +1,10 @@
 \documentclass[11pt,a4paper]{ivoa}
 \input tthdefs
 
+\lstloadlanguages{XML}
+\lstset{flexiblecolumns=true,tagstyle=\ttfamily,
+showstringspaces=False,basicstyle=\footnotesize}
+
 \title{TableReg: Registering TAP-Queriable Tables Conforming to Standard
 Schemas}
 
@@ -65,7 +69,7 @@ observations
 system data
 \end{itemize}
 
-More such standards are currently being developed, such as LineTAP
+More such standards are currently being developed. Examples include LineTAP
 \citep{wd:linetap23} and the Obscore extension for radio data.
 
 Of course, resources complying to these standards must be made
@@ -85,14 +89,15 @@ discovery, the global VOResource metadata (title, authors, and perhaps
 most importantly coverage in space, time and spectrum) are these of the
 TAP service, which the tables may share with any number of other tables.
 
-\item Unclear relationships: In particular for Obscore, a severe
-shortcoming is that data collection records can only generically say
+\item Unclear relationships: In particular for Obscore -- rather
+typically serving several data collections at once --, a serious
+problem is that data collection records can only generically say
 that they are served by the TAP service (cf.~\citet{2019ivoa.spec.0520D}
 for the general scheme of relating data collections and services).  From
 that, clients cannot deduce whether the data is available through, say,
 obscore, or only in some custom table.
 
-\item Logic: Adherence to a data model simply is not a property of a
+\item Suitability: Adherence to a data model simply is not a property of a
 TAP service.  It is a property of a specific table or schema.
 \end{enumerate}
 
@@ -128,8 +133,89 @@ implement) to a VO adopting the scheme proposed here.
 \section{Registering and Discovering Standard Tables}
 \label{sect:norms}
 
-\section{Expressing Relationships Between Tables}
+In the scheme proposed here, TAP-queriable resources conforming to
+standard table schemas will be registered as
+\xmlel{vs:CatalogResource}-typed Resources.  If they consist of only a
+single table or of multiple, independently publishable tables (e.g.,
+Obscore, EPN-TAP), an IVOA identifier \citep{2016ivoa.spec.0523D} is
+defined for this particular table.  This will refer to a StandardsRegExt
+\citep{2012ivoa.spec.0508H} \xmlel{StandardKey}, generally in the
+defining standard's resource record.  This standard key SHOULD contain a
+version tag precise to the minor version; it is at least conceivable
+that clients may only want to discover tables containing later
+additions.
+
+Hence, the VODataService \xmlel{table} element for a table conforming to
+Obscore 1.2 would begin like this:
+\begin{lstlisting}[language=XML]
+<table>
+  <name>ivoa.obscore</name>
+  <title>Obscore Table in the Fictional Data Centre</title>
+  <description>
+    This is example metadata for use in the
+    TableReg specification.
+  </description>
+  <utype>ivo://ivoa.net/std/obscore#table-1.2</utype>
+  ...
+\end{lstlisting}
+where Obscore's StandardsRegExt record contains a fragment:
+\begin{lstlisting}[language=XML]
+<key>
+  <name>table-1.2</name>
+  <description>The data model for a table conforming to version 1.2
+  of this specification.  This implies a set of nn mandatory columns,
+  as well as the table's name, ivoa.obscore.
+  </description>
+</key>
+\end{lstlisting}
+
+Standards defining full schemas, i.e., sets of interconnected tables
+that only make sense together -- at the moment, RegTAP is our only
+example -- will similarly define a StandardKey to use with a schema
+element.  The RegTAP registry record currently has:
+
+\begin{lstlisting}[language=XML]
+<key>
+  <name>1.1</name>
+  <description>The data model for the tables making up the relational
+  registriy in version 1.1.  This key is used to locate TAP services
+  implementing RR in TAPRegExt dataModel or VODataService schema/@utype
+  elements.
+  </description>
+</key>
+\end{lstlisting}
+
+Hence, the tableset of the record for the Heidelberg RegTAP service
+\nolinkurl{ivo://org.gavo.dc/rr/q/create} contains:
+
+\begin{lstlisting}[language=XML]
+<schema>
+   <name>rr</name>
+   <title>GAVO RegTAP Service</title>
+   <description>
+     Tables containing the information in the IVOA Registry[...]
+   <utype>ivo://ivoa.net/std/RegTAP#1.1</utype>
+   <table>...
+\end{lstlisting}
+
+It is not recommended to follow the RegTAP's example of omitting an
+indicator of what is referred to in the standard key's name.  Hence,
+prefer, for instance, \verb|schema-1.1| to \verb|1.1|; it is always
+conceivable that additional versioned entities may require standard
+keys.
+
+Let us already stress here that for standard discovery, the minor
+version must be ignored.  Clients should be written such that if they
+work for any 1.x version, they work for all 1.x versions, except of
+course where compelling reasons exist to require features not present in
+earlier minor versions.
+
+
+\section{Expressing Relationships Between Tables and Other Resources}
 \label{sect:rels}
+
+An important reason to enumerate resources conforming to a schema is
+global discovery.
 
 \section{Transitioning to a TableReg World}
 \label{sect:transition}
