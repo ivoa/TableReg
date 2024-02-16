@@ -1,9 +1,28 @@
 \documentclass[11pt,a4paper]{ivoa}
 \input tthdefs
 
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+
 \lstloadlanguages{XML}
 \lstset{flexiblecolumns=true,tagstyle=\ttfamily,
 showstringspaces=False,basicstyle=\footnotesize}
+
+\definecolor{termcolor}{rgb}{0.6,0.1,0.1}
+\iftth
+\def\vocterm#1{\emph{\color{termcolor}#1}}
+
+\else
+\def\vocterm{\startvocterm\realvocterm}
+\def\realvocterm#1{\emph{\color{termcolor}#1}\endvocterm}
+\begingroup
+\gdef\breakablecolon{:\hskip0pt}
+\catcode`\:=\active
+\gdef\startvocterm{\begingroup
+  \catcode`\:=\active\let:=\breakablecolon}
+\gdef\endvocterm{\endgroup}
+\endgroup
+\fi
 
 \title{TableReg: Registering TAP-Queriable Tables Conforming to Standard
 Schemas}
@@ -215,7 +234,82 @@ earlier minor versions.
 \label{sect:rels}
 
 An important reason to enumerate resources conforming to a schema is
-global discovery.
+global discovery of whatever is described in the table; in the case of
+Obscore, this would be observational datasets.
+
+\begin{figure}
+\begin{tikzpicture}[
+service/.style={bottom color=blue!20,
+  top color=white,
+  rounded corners=1mm,
+  minimum height=6mm,
+  thin,draw=black!50,align=center,
+  node distance=4mm and 2cm,
+  node font=\footnotesize
+}]
+\node (s1) [service] {Hit Seek Observatory SIA1};
+
+\node (s2) [service, below=of s1] {Palomino Telescopes SIA1} ;
+
+\node (s3) [service, below=of s2] {Spectra of Flare Stars SSAP} ;
+
+\node (s4) [service, below=of s3] {Geas Time series};
+
+\node (s5) [service, below=of s4] {KiRASS Infrared Image Archives};
+
+\node (s6) [service, right=of s1] {SIA2 Images at the TOFU data centre};
+
+\node (s7) [service, right=of s5] {\strut TOFU data centre obscore};
+
+
+\draw [black,->] (s1) to (s6);
+\draw [black,->] (s2) to (s6);
+\draw [black,->] (s3) to (s7);
+\draw [black,->] (s4) to (s7);
+\draw [black,->] (s5) to (s7);
+\draw [black,->] (s6) to (s7);
+\end{tikzpicture}
+
+\caption{Benefits of making relationships between resources explicit.
+The nodes in this graph correspond to services, the arrows point from a
+a service to a collective service also serving the data served by the
+first service.  By evaluating the relationships, a
+client can deduce that the data published through the seven services
+can be queried by running one Obscore query on the TOFU data
+centre.}
+\label{fig:rel-sketch}
+\end{figure}
+
+An important reason to define registry records for such resources is
+that data collections published using multiple standards can
+machine-readably declare these relationships.  In that way, clients
+doing global discovery can skip services publishing data they already
+queried using other services.  Consider Fig.~\ref{fig:rel-sketch} for an
+illustration of the dramatic savings enabled by making such
+relationships explicit.
+
+In VOResource, relationships are declared between registry resources
+using the \xmlel{relationship} element, containing a
+\xmlel{relationshipType} and one or more \xmlel{relatedResource}-s.  For
+relationships between data collections and services making them
+queriable, the Endorsed Note on Discovering Data Collections
+\citep{2019ivoa.spec.0520D} forsees \vocterm{IsServedBy} from the IVOA
+relationship type
+vocabulary\footnote{\url{http://www.ivoa.net/rdf/voresoure/relationship_type}}.
+
+We argue that this term can be re-used here, even though the
+relationship's label might appear somewhat misplaced when a
+CatalogService-typed record declares that it is served by a
+CatalogResource-typed record; that is what happens if a SIA-published
+data collection says it is also present in an obscore table.
+
+More specifically, where data contained in or published through resource
+$A$ is also contained in or published through a more general (in the sense
+of: making other data collections queriable, too) resource $B$, the
+resource record of record $A$ should declare a relationship to $B$ with
+a \xmlel{relationshipType} of \vocterm{IsServedBy}.
+
+Resources MUST NOT declare circular \vocterm{IsServedBy} relationships.
 
 \section{Transitioning to a TableReg World}
 \label{sect:transition}
