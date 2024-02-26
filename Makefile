@@ -30,7 +30,7 @@ FIGURES =
 VECTORFIGURES =
 
 # Additional files to distribute (e.g., CSS, schema files, examples...)
-AUX_FILES =
+AUX_FILES = example-record.xml
 
 -include ivoatex/Makefile
 
@@ -39,5 +39,7 @@ ivoatex/Makefile:
 	@echo
 	git submodule update --init
 
+# These tests need stilts >3.4
 test:
-	@echo "No tests defined yet"
+	@$(STILTS) xsdvalidate example-record.xml
+
