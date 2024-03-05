@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ri:Resource
+		xmlns:ri="http://www.ivoa.net/xml/RegistryInterface/v1.0"
+		xmlns:vr="http://www.ivoa.net/xml/VOResource/v1.0"
+		xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		created="2011-03-25T10:23:00Z"
+		updated="2024-02-06T10:19:33Z"
+		status="active"
+		xsi:type="vs:CatalogResource">
+  <title>GAVO Data Center Obscore Table</title>
+  <shortName>GAVO DC Obscore</shortName>
+  <identifier>ivo://org.gavo.dc/__system__/obscore/ObsCore</identifier>
+  <curation>
+    <publisher>The GAVO DC team</publisher>
+    <creator>
+      <name>GAVO Data Center</name>
+      <logo>http://vo.ari.uni-heidelberg.de/docs/GavoTiny.png</logo>
+    </creator>
+    <date role="updated">2022-08-18T12:56:24Z</date>
+    <contact>
+      <name>GAVO Data Center Team</name>
+      <address>Mönchhofstrasse 12-14, D-69120 Heidelberg</address>
+      <email>gavo@ari.uni-heidelberg.de</email>
+      <telephone>++49 6221 54 1837</telephone>
+    </contact>
+  </curation>
+  <content>
+    <subject>observational-astronomy</subject>
+    <description>The IVOA-defined obscore table, containing generic metadata
+    for datasets within this datacenter.</description>
+    <referenceURL>http://dc.zah.uni-heidelberg.de/tableinfo/ivoa.ObsCore</referenceURL>
+    <relationship>
+      <relationshipType>IsServedBy</relationshipType>
+      <relatedResource
+      	ivo-id="ivo://org.gavo.dc/tap">GAVO Data Center TAP service</relatedResource>
+    </relationship>
+  </content>
+  <capability standardID="ivo://ivoa.net/std/TAP#aux">
+    <interface role="std" version="1.1" xsi:type="vs:ParamHTTP">
+      <accessURL use="full">http://dc.zah.uni-heidelberg.de/tap</accessURL>
+      <mirrorURL>https://dc.zah.uni-heidelberg.de/tap</mirrorURL>
+    </interface>
+  </capability>
+  <coverage>
+    <spatial>0/0-11 6/</spatial>
+    <temporal>-7801.5 63023.51852</temporal>
+    <spectral>2.820522229e-29 1.603508989e-08</spectral>
+  </coverage>
+  <tableset>
+    <schema>
+      <name>ivoa</name>
+      <description>The ivoa schema contains bespoke IVOA tables.
+      table.</description>
+      <table>
+        <name>ivoa.obscore</name>
+        <title>GAVO Data Center Obscore Table</title>
+        <description>The IVOA-defined obscore table, containing generic
+        metadata for datasets within this datacenter.</description>
+        <utype>ivo://ivoa.net/std/obscore#table-1.1</utype>
+        <nrows>84947229</nrows>
+        <column>
+          <name>dataproduct_type</name>
+          <description>High level scientific classification of the data
+          	product, taken from an enumeration</description>
+          <ucd>meta.code.class</ucd>
+          <utype>obscore:obsdataset.dataproducttype</utype>
+          <dataType arraysize="*" xsi:type="vs:VOTableType">char</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>dataproduct_subtype</name>
+          <description>Data product specific type</description>
+          <ucd>meta.code.class</ucd>
+          <utype>obscore:obsdataset.dataproductsubtype</utype>
+          <dataType arraysize="*" xsi:type="vs:VOTableType">char</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>calib_level</name>
+          <description>Amount of data processing that has been applied to the
+          	data</description>
+          <ucd>meta.code;obs.calib</ucd>
+          <utype>obscore:obsdataset.caliblevel</utype>
+          <dataType xsi:type="vs:VOTableType">short</dataType>
+        </column>
+        <column>
+          <name>obs_collection</name>
+          <description>Name of a data collection (e.g., project name) this data
+          	belongs to</description>
+          <ucd>meta.id</ucd>
+          <utype>obscore:dataid.collection</utype>
+          <dataType arraysize="*" xsi:type="vs:VOTableType">char</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>obs_id</name>
+          <description>Unique identifier for an observation</description>
+          <ucd>meta.id</ucd>
+          <utype>obscore:DataID.observationID</utype>
+          <dataType arraysize="*" xsi:type="vs:VOTableType">char</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>obs_title</name>
+          <description>Free-from title of the data set</description>
+          <ucd>meta.title;obs</ucd>
+          <utype>obscore:dataid.title</utype>
+          <dataType arraysize="*" xsi:type="vs:VOTableType">char</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>obs_publisher_did</name>
+          <description>Dataset identifier assigned by the publisher.</description>
+          <ucd>meta.ref.ivoid</ucd>
+          <utype>obscore:curation.publisherdid</utype>
+          <dataType arraysize="*" xsi:type="vs:VOTableType">char</dataType>
+          <flag>indexed</flag>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>obs_creator_did</name>
+          <description>Dataset identifier assigned by the creator.</description>
+          <ucd>meta.id</ucd>
+          <utype>obscore:dataid.creatordid</utype>
+          <dataType arraysize="*" xsi:type="vs:VOTableType">char</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>access_url</name>
+          <description>The URL at which to obtain the data set.</description>
+          <ucd>meta.ref.url</ucd>
+          <utype>obscore:access.reference</utype>
+          <dataType arraysize="*" xsi:type="vs:VOTableType">char</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>access_format</name>
+          <description>MIME type of the resource at access_url</description>
+          <ucd>meta.code.mime</ucd>
+          <utype>obscore:access.format</utype>
+          <dataType arraysize="*" xsi:type="vs:VOTableType">char</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>access_estsize</name>
+          <description>Estimated size of data product</description>
+          <unit>kbyte</unit>
+          <ucd>phys.size;meta.file</ucd>
+          <utype>obscore:access.size</utype>
+          <dataType xsi:type="vs:VOTableType">long</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>target_name</name>
+          <description>Object a targeted observation targeted</description>
+          <ucd>meta.id;src</ucd>
+          <utype>obscore:Target.Name</utype>
+          <dataType arraysize="*" xsi:type="vs:VOTableType">char</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>target_class</name>
+          <description>Class of the target object (star, QSO, ...)</description>
+          <ucd>src.class</ucd>
+          <utype>obscore:target.class</utype>
+          <dataType arraysize="*" xsi:type="vs:VOTableType">char</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>s_ra</name>
+          <description>RA of (center of) observation, ICRS</description>
+          <unit>deg</unit>
+          <ucd>pos.eq.ra</ucd>
+          <utype>obscore:char.spatialaxis.coverage.location.coord.position2d.value2.c1</utype>
+          <dataType xsi:type="vs:VOTableType">double</dataType>
+          <flag>indexed</flag>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>s_dec</name>
+          <description>Dec of (center of) observation, ICRS</description>
+          <unit>deg</unit>
+          <ucd>pos.eq.dec</ucd>
+          <utype>obscore:char.spatialaxis.coverage.location.coord.position2d.value2.c2</utype>
+          <dataType xsi:type="vs:VOTableType">double</dataType>
+          <flag>indexed</flag>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>s_fov</name>
+          <description>Approximate spatial extent for the region covered by the observation</description>
+          <unit>deg</unit>
+          <ucd>phys.angSize;instr.fov</ucd>
+          <utype>obscore:char.spatialaxis.coverage.bounds.extent.diameter</utype>
+          <dataType xsi:type="vs:VOTableType">double</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>s_region</name>
+          <description>Region covered by the observation, as a polygon</description>
+          <ucd>pos.outline;obs.field</ucd>
+          <utype>obscore:char.spatialaxis.coverage.support.area</utype>
+          <dataType arraysize="*" extendedType="adql:REGION" xsi:type="vs:VOTableType">char</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>s_resolution</name>
+          <description>Best spatial resolution within the data set</description>
+          <unit>arcsec</unit>
+          <ucd>pos.angResolution</ucd>
+          <utype>obscore:Char.SpatialAxis.Resolution.refval.value</utype>
+          <dataType xsi:type="vs:VOTableType">double</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>t_min</name>
+          <description>Lower bound of times represented in the data set</description>
+          <unit>d</unit>
+          <ucd>time.start;obs.exposure</ucd>
+          <utype>obscore:char.timeaxis.coverage.bounds.limits.starttime</utype>
+          <dataType xsi:type="vs:VOTableType">double</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>t_max</name>
+          <description>Upper bound of times represented in the data set</description>
+          <unit>d</unit>
+          <ucd>time.end;obs.exposure</ucd>
+          <utype>obscore:char.timeaxis.coverage.bounds.limits.stoptime</utype>
+          <dataType xsi:type="vs:VOTableType">double</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>t_exptime</name>
+          <description>Total exposure time</description>
+          <unit>s</unit>
+          <ucd>time.duration;obs.exposure</ucd>
+          <utype>obscore:char.timeaxis.coverage.support.extent</utype>
+          <dataType xsi:type="vs:VOTableType">float</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>t_resolution</name>
+          <description>Minimal significant time interval along the time axis</description>
+          <unit>s</unit>
+          <ucd>time.resolution</ucd>
+          <utype>obscore:char.timeaxis.resolution.refval.value</utype>
+          <dataType xsi:type="vs:VOTableType">float</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>em_min</name>
+          <description>Minimal wavelength represented within the data set</description>
+          <unit>m</unit>
+          <ucd>em.wl;stat.min</ucd>
+          <utype>obscore:char.spectralaxis.coverage.bounds.limits.lolimit</utype>
+          <dataType xsi:type="vs:VOTableType">double</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>em_max</name>
+          <description>Maximal wavelength represented within the data set</description>
+          <unit>m</unit>
+          <ucd>em.wl;stat.max</ucd>
+          <utype>obscore:char.spectralaxis.coverage.bounds.limits.hilimit</utype>
+          <dataType xsi:type="vs:VOTableType">double</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>em_res_power</name>
+          <description>Spectral resolving power lambda/delta lambda</description>
+          <ucd>spect.resolution</ucd>
+          <utype>obscore:char.spectralaxis.resolution.resolpower.refval</utype>
+          <dataType xsi:type="vs:VOTableType">double</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>o_ucd</name>
+          <description>UCD for the product's observable</description>
+          <ucd>meta.ucd</ucd>
+          <utype>obscore:char.observableaxis.ucd</utype>
+          <dataType arraysize="*" xsi:type="vs:VOTableType">char</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>pol_states</name>
+          <description>List of polarization states in the data set</description>
+          <ucd>meta.code;phys.polarization</ucd>
+          <utype>obscore:Char.PolarizationAxis.stateList</utype>
+          <dataType arraysize="*" xsi:type="vs:VOTableType">char</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>facility_name</name>
+          <description>Name of the facility at which data was taken</description>
+          <ucd>meta.id;instr.tel</ucd>
+          <utype>obscore:Provenance.ObsConfig.facility.name</utype>
+          <dataType arraysize="*" xsi:type="vs:VOTableType">char</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>instrument_name</name>
+          <description>Name of the instrument that produced the data</description>
+          <ucd>meta.id;instr</ucd>
+          <utype>obscore:Provenance.ObsConfig.instrument.name</utype>
+          <dataType arraysize="*" xsi:type="vs:VOTableType">char</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>s_xel1</name>
+          <description>Number of elements (typically pixels) along the first spatial axis.</description>
+          <ucd>meta.number</ucd>
+          <utype>obscore:Char.SpatialAxis.numBins1</utype>
+          <dataType xsi:type="vs:VOTableType">long</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>s_xel2</name>
+          <description>Number of elements (typically pixels) along the second spatial axis.</description>
+          <ucd>meta.number</ucd>
+          <utype>obscore:Char.SpatialAxis.numBins2</utype>
+          <dataType xsi:type="vs:VOTableType">long</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>t_xel</name>
+          <description>Number of elements (typically pixels) along the time axis.</description>
+          <ucd>meta.number</ucd>
+          <utype>obscore:Char.TimeAxis.numBins</utype>
+          <dataType xsi:type="vs:VOTableType">long</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>em_xel</name>
+          <description>Number of elements (typically pixels) along the spectral axis.</description>
+          <ucd>meta.number</ucd>
+          <utype>obscore:Char.SpectralAxis.numBins</utype>
+          <dataType xsi:type="vs:VOTableType">long</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>pol_xel</name>
+          <description>Number of elements (typically pixels) along the polarization axis.</description>
+          <ucd>meta.number</ucd>
+          <utype>obscore:Char.PolarizationAxis.numBins</utype>
+          <dataType xsi:type="vs:VOTableType">long</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>s_pixel_scale</name>
+          <description>Sampling period in world coordinate units along the spatial axis</description>
+          <unit>arcsec</unit>
+          <ucd>phys.angSize;instr.pixel</ucd>
+          <utype>obscore:Char.SpatialAxis.Sampling.RefVal.SamplingPeriod</utype>
+          <dataType xsi:type="vs:VOTableType">double</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>em_ucd</name>
+          <description>Nature of the product's spectral axis (typically, em.freq, em.wl, or em.energy)</description>
+          <ucd>meta.ucd</ucd>
+          <utype>obscore:Char.SpectralAxis.ucd</utype>
+          <dataType arraysize="*" xsi:type="vs:VOTableType">char</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>preview</name>
+          <description>URL of a preview (low-resolution, quick-to-retrieve representation) of the data.</description>
+          <ucd>meta.ref.url;meta.preview</ucd>
+          <dataType arraysize="*" xsi:type="vs:VOTableType">char</dataType>
+          <flag>nullable</flag>
+        </column>
+        <column>
+          <name>source_table</name>
+          <description>Name of a TAP-queriable table this data originates from. This source table usually provides more information on the the data than what is given in obscore. See the TAP_SCHEMA of the originating TAP server for details.</description>
+          <ucd>meta.id;meta.table</ucd>
+          <dataType arraysize="*" xsi:type="vs:VOTableType">char</dataType>
+          <flag>nullable</flag>
+        </column>
+      </table>
+    </schema>
+  </tableset>
+</ri:Resource>

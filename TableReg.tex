@@ -42,10 +42,10 @@ Schemas}
 \begin{abstract}
 An increasingly popular pattern in the Virtual Observatory, pioneered
 by Obscore, is to define a schema for one or more tables in a database
-and then publish data by making it accessible in tables conforming to
-that schema in TAP services.  This document discusses how such resources
+and then publish data or metadata by putting conforming tables into
+TAP services.  This document discusses how such resources
 should be represented in the VO Registry to facilitate data discovery,
-in particular global, all-VO data discovery.
+in particular global, all-VO dataset discovery.
 
 It turns out that the existing registration patterns for Obscore,
 RegTAP, and EPN-TAP require some adjustments.  The document therefore
@@ -73,7 +73,8 @@ infrastructure that enable VO applications.
 Beginning with Obscore 1.0 \citep{2011ivoa.spec.1028T}, an increasing
 number of Virtual Observatory standards at their core just define a
 table schema -- understood here as a well-defined set of columns within
-one or more relations -- and rely on TAP \citep{2019ivoa.spec.0927D} to
+one or more relations -- and rely on the IVOA's Table Access Protocol
+TAP \citep{2019ivoa.spec.0927D} to
 let clients actually run queries.  Standards of this type include:
 
 \begin{itemize}
@@ -97,16 +98,16 @@ discoverable to be useful.  Both Obscore and RegTAP have employed the
 \citep{2012ivoa.spec.0827D} to declare the presence of tables adhering
 to a standard schema in a TAP service.
 
-Both Obscore and RegTAP are singletons with fixed names, i.e., once one
-has discovered a TAP service ``supporting'' a data model, it is clear
-how to query it.  However, even for these, the \xmlel{dataModel}-scheme
-has severe shortcomings:
+In practice, however, the \xmlel{dataModel} scheme
+has some severe shortcomings:
 
 \begin{enumerate}
 \item Lack of resource metadata: In resource records located during
 discovery, the global VOResource metadata (title, authors, and perhaps
-most importantly coverage in space, time and spectrum) are these of the
-TAP service, which the tables may share with any number of other tables.
+most importantly coverage in space, time and spectrum) is that of the
+TAP service, which the standard tables may share with any number of
+other tables.  Hence, it will at best be overly general.  More often
+than not, it will be severely misleading.
 
 \item Unclear relationships: In particular for Obscore -- rather
 typically serving several data collections at once --, a serious
@@ -120,11 +121,14 @@ obscore, or only in some custom table.
 TAP service.  It is a property of a specific table or schema.
 \end{enumerate}
 
-EPN-TAP then employed the table-in-TAP scheme without the constraint to
-a singleton; since each data collection has an EPN-TAP table of its own,
-the discovery process somehow also had to yield a table name.  As a
-solution, the standard forsees using the table's \xmlel{utype} field in
-the VODataService \citep{2010ivoa.spec.1202P} \xmlel{tableset}.
+In addition, when standards do not define ``singletons'' (i.e., a TAP
+service can only contain one instance of each, and their names are
+fixed) but instead table schemas applicable to arbitrarily-named tables,
+the discovery process also needs to yield table names.
+EPN-TAP was the first standard with such a requirement.  As a
+solution, it switched to using the table's \xmlel{utype} element in
+the VODataService \citep{2021ivoa.spec.1102D} \xmlel{tableset} for
+discovery.
 
 This mode of discovery was subsequently also employed in ObsLocTAP and
 LineTAP.  It still has a drawback, though: Clients discovering a service
@@ -138,16 +142,20 @@ to the data collection in question).
 
 This note remedies that by prescribing that for resource records for
 standard-compliant tables, the resource type \xmlel{vs:CatalogResource}
-must be used.
+(against \xmlel{vs:CatalogService} of the actual TAP service) must be used.
 
-In Sect.~\ref{sect:norms}, we review the proposed scheme and give
-boilerplate text to include in standards following it.  One reason to
+In Sect.~\ref{sect:norms}, we discuss the proposed scheme and give
+XML snippets illustrating the various components necessary for efficient
+global discovery.  One reason to
 introduce the scheme is to enable expressing inclusion relationships
 between resources for the benefit of clients doing global discovery.
-Sect.~\ref{sect:rels} discusses this mechanism in more detail.  Finally,
+Sect.~\ref{sect:rels} discusses this mechanism in more detail.
 Sect.~\ref{sect:transition} addresses the question of how to transition
 from what the standards currently say (and the services and clients
-implement) to a VO adopting the scheme proposed here.
+implement) to a VO adopting the scheme proposed here.  The particular
+example of Obscore is treated in Sect.~\ref{sect:obscore} and can
+largely serve as boilerplate text for future standards of its kind.
+
 
 \section{Registering and Discovering Standard Tables}
 \label{sect:norms}
@@ -160,9 +168,16 @@ Obscore, EPN-TAP), an IVOA identifier \citep{2016ivoa.spec.0523D} is
 defined for this particular table type.  This will refer to a StandardsRegExt
 \citep{2012ivoa.spec.0508H} \xmlel{StandardKey}, generally in the
 defining standard's resource record.  This standard key SHOULD contain a
-version tag precise to the minor version; it is at least conceivable
-that clients may only want to discover tables containing later
-additions.
+version tag precise to the minor version.  Looking back, the convention
+of long version tags may seem questionable, but it is at least
+conceivable that clients may want to constrain their discovery to tables
+containing additions made during a major version cycle.
+
+For robustness and flexibility, clients should not use the information
+on the minor version to infer presence or absence of certain features
+(e.g., a column added in a minor update), however, but rather directly
+check for that feature's presence, and standards should provide means
+for doing so independently of the full version tag.
 
 Hence, the VODataService \xmlel{table} element for a table conforming to
 Obscore 1.2 would begin like this:
@@ -312,13 +327,140 @@ of: making other data collections queriable, too) resource $B$, the
 resource record of record $A$ should declare a relationship to $B$ with
 a \xmlel{relationshipType} of \vocterm{IsServedBy}.
 
-Resources MUST NOT declare circular \vocterm{IsServedBy} relationships.
+Resources must not declare circular \vocterm{IsServedBy} relationships.
 
 \section{Transitioning to a TableReg World}
 \label{sect:transition}
 
+There are already several standards registering TAP-published tables in
+one way or another.  For standards currently in Working Draft or later,
+we give transition plans, both in terms of the standards process and the
+actual records in the VO Registry, here.  Numbers in the following
+sections are for March 2024.
+
+\subsection{Obscore}
+
+To enable viable global dataset discovery, reparing the registration
+pattern is most urgent for Obscore.  Against that, the current,
+\xmlel{dataModel}-based registration pattern is furthest away from what
+is proposed here.  Hence, it is probably unavoidable to issue a new
+minor version of Obscore.
+
+In order to provide a smooth transition, the current pattern of using an
+ivoid in the embedding TAP service's \xmlel{dataModel} must be retained.
+In addition, a new standard for Obscore 1.2 will contain an adapted
+version of the material in sections~\ref{sect:registering-obscore}
+and~\ref{sect:finding-obscore}.
+
+To enable viable global datatset discovery as soon as possible, once
+sufficient consensus within the Registry and Data Model WGs has been
+found, the Registry WG should contact the operators of
+the obscore services currently active in order to advise them on
+creating an additional Obscore registry record with the required
+declarations.
+
+\subsection{EPN-TAP}
+
+Discovery of EPN-TAP 2.0 \citep{2022ivoa.spec.0822E} resources is
+already based on giving a table utype in a tableset.  It says:
+
+\begin{quotation}
+\noindent Normally, however, the
+tableset will be contained in a VODataService \xmlel{CatalogService}
+record with a TAP capability, and this capability will be an auxiliary
+capability as per DDC \citep{2019ivoa.spec.0520D}.  For one-table
+services, a full TAPRegExt \citep{2012ivoa.spec.0827D} capability is also
+allowed.
+\end{quotation}
+
+Against the present proposal, this admits pure-TAP services and does not
+require the use of \xmlel{vs:CatalogResource}-typed resource records
+(although in practice the wide majority of EPN-TAP publishers chose
+that resource type despite the recommendation in the standard, which
+predates the availability of \xmlel{vs:CatalogResource}).
+
+
+Leaving open the resource type complicates
+the discovery pattern significantly, since clients have
+to filter out duplicates when a table is present in both the TAP
+service's and the resource's tableset.  We hence propose to require the
+use of \xmlel{vs:CatalogResource} in the future,
+where we consider an adivsory erratum sufficient;
+in the end, updates to the existing resource records need to be done in
+a cooperation between the Registry WG and the data providers anyway.
+
+In February 2024, there were 488 resources with tables with the EPN-TAP
+table utype in their tableset.  Of these,
+
+\begin{itemize}
+\item 475 have the epncore utype, 13 (from four different authorities)
+the legacy vopdc utype (which is probably a good measure for how many
+resource records may be hard to update)
+\item 245 have a TAP auxiliary standard id, 243 a full TAP id.
+\item 249 are of the type \xmlel{vs:CatalogService}, 239 of type
+\xmlel{vs:CatalogResource} (in a perfect system, there are zero or one
+\xmlel{vs:CatalogService} record per \xmlel{vs:CatalogResource} record;
+zero would be when the TAP services comes without a tableset).
+\end{itemize}
+
+Looking somewhat closer, it turns out that only four servers (counted by
+access URL) chose the \xmlel{vs:CatalogService} resource type for
+their table resource record, and only one TAP server is missing from the
+registry.  It seems entriely possible to rectify these cases on short
+notice.
+
+\subsection{ObsLocTAP}
+
+ObsLocTAP \citep{2021ivoa.spec.0724S} already prescribes the pattern
+proposed here. The discovery query given is missing a constraint on the
+resource type, though.  We believe this is easily repaired through an
+erratum.
+
+
+\subsection{RegTAP}
+
+In its section~7, RegTAP~1.1 \citep{2019ivoa.spec.1011D} already offers
+two registration patterns.  One is based on \xmlel{dataType} in the TAP
+capabilities.  In the next minor version, this mechanism will be
+deprecated.  Instead, the alternative scheme, based on
+\xmlel{vg:Registry}-typed records, need to be more fully specified and
+advertised as the primary means of locating RegTAP searchable
+registries.   Also, since RegTAP is a complete schema, the utype to
+search will sit on the \xmlel{schema} element.
+
+Against the pattern given in sect.~\ref{sect:finding-obscore}, we would hence
+give
+\begin{lstlisting}[language=SQL]
+SELECT DISTINCT table_name, access_url
+FROM rr.res_table
+  NATURAL JOIN rr.capability
+  NATURAL JOIN rr.interface
+  NATURAL JOIN rr.resource
+WHERE
+  table_utype LIKE 'ivo://ivoa.net/std/regtap#table-1.%'
+  AND standard_id LIKE 'ivo://ivoa.net/std/tap%'
+  AND intf_role='std'
+  AND res_type='vg:registry'
+\end{lstlisting}
+as the canonical discovery pattern.
+
+The \xmlel{vg:Registry} resource type does not admit the
+\xmlel{coverage} child from VODataService 1.2.  Given that
+space-time coverage is not a useful concept at least for full
+registries, and the discovery of partial searchable registries (which
+conceivably could be profit from coverage declarations)
+has not been a relevant use case so
+far, this seems an acceptable deficit.
+
+At this point, there is no particular urgency for this change; the
+discovery of searchable registries is not something commonly performed
+in VO workflows, and given the (theoretical) equivalence of the RegTAP
+services, it is unlikely richer metadata an the registry records will be
+required any time soon.
+
 
 \section{Obscore Tables in the Registry}
+\label{sect:obscore}
 
 This section is intended both as the blueprint for what Obscore 1.2
 should say (in addition to the transitional \xmlel{dataModel}
@@ -330,18 +472,18 @@ the Registry sections of similar standards.
 
 Obscore tables are registered using VODataService
 \citep{2010ivoa.spec.1202P} tablesets, where the table utype is set to
-$$\hbox{\verb|ivo://ivoa.net/std/linetap#table-1.0|}.$$
+$$\hbox{\verb|ivo://ivoa.net/std/obscore#table-1.2|}.$$
 
-The tableset is contained in a VODataService \xmlel{vs:CatalogResource}
-record with a TAP capability, where this capability is an auxiliary
+The tableset is contained in a resource record of the VODataService type
+\xmlel{vs:CatalogResource}
+with a TAP capability, where this capability is an auxiliary
 capability as per DDC \citep{2019ivoa.spec.0520D}.  The TAP service
 serving the table must also be registered, and an \vocterm{IsServedBy}
 relationship must be declared from the Obscore record to the TAP record.
 
 When registry records for data collections published through the Obscore
 table are also published -- and publishers are strongly urged to do
-that whenever the Obscore record does not contain the Dublin Core
-metadata for the individual collection(s) --, \vocterm{IsServedBy}
+that --, an \vocterm{IsServedBy}
 relationship must also be declared from the individual collections'
 records to the Obscore record.
 
@@ -388,9 +530,10 @@ clients discover that this particular table contains Obscore data:
 \end{itemize}
 
 \subsection{Discovering Obscore Tables}
+\label{sect:finding-obscore}
 
-Obscore clients in general are interested in TAP endpoints of Obscore
-services as well as the table's metadata, such as its coverage in space,
+Obscore clients in general are interested in TAP endpoints serving Obscore
+tables as well as the table's metadata, such as its coverage in space,
 time, and spectrum.  By the  registration pattern given in
 \ref{sect:registering-obscore}, this translates into resources with TAP
 (auxiliary) capabilities that have a standard key for version 1 Obscore
@@ -406,6 +549,7 @@ SELECT DISTINCT table_name, access_url
 FROM rr.res_table
   NATURAL JOIN rr.capability
   NATURAL JOIN rr.interface
+  NATURAL JOIN rr.resource
 WHERE
   table_utype LIKE 'ivo://ivoa.net/std/obscore#table-1.%'
   AND standard_id LIKE 'ivo://ivoa.net/std/tap%'
@@ -415,20 +559,24 @@ WHERE
 
 The regular expression in the utype match is to make sure minor version
 increments do not prevent resource discovery; by IVOA versioning rules,
-all LineTAP services of minor version 1 can be operated by all LineTAP
+all Obscore tables of minor version 1 can be operated by all Obscore
 clients of version 1.  We do not constrain the version of the TAP
 service. Clients may want to adapt the TAP discovery pattern to match
 their specific needs.
 
+Clients not prepared to negotiate authentication should also add a
+constraint \verb|AND authenticated_only=0| to avoid unnecessary attempts
+to access protected resources.
+
 Clients can add additional constraints (e.g., on publishers, coverage,
 or, in VODataService 1.3 or later, data product types) to this basic
-query as usual in VOResource (i.e., by \verb|NATURAL JOIN|-ing the
+query as usual in VOResource, i.e., by \verb|NATURAL JOIN|-ing the
 tables containing the columns and adding additional \verb|WHERE|
 clauses.  Constraints against the embedding TAP service, however,
 require a more complex join through the \verb|rr.relationship| table;
 this is not expected to be a common use case.
 
-For Obscore 1.3, \verb|table_name| in this query will always be
+Incidentally, for Obscore 1.2, \verb|table_name| in this query will always be
 \verb|ivoa.obscore|.  This item hence is only relevant for standards
 that allow for flexible table names.
 

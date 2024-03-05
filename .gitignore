@@ -13,6 +13,7 @@ ivoatexmeta.tex
 gitmeta.tex
 *.swp
 role_diagram.svg
+analysis
 
 # OS-specific
 .DS_Store
