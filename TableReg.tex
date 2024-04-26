@@ -122,7 +122,8 @@ TAP service.  It is a property of a specific table or schema.
 \end{enumerate}
 
 In addition, when standards do not define ``singletons'' (i.e., a TAP
-service can only contain one instance of each, and their names are
+service can only contain one instance of each
+complying table, and the tables' names are
 fixed) but instead table schemas applicable to arbitrarily-named tables,
 the discovery process also needs to yield table names.
 EPN-TAP was the first standard with such a requirement.  As a
@@ -140,7 +141,8 @@ TAP service serving the data collection (in which case the global
 metadata pertains to the TAP service and will be essentially unrelated
 to the data collection in question).
 
-This note remedies that by prescribing that for resource records for
+The registration schema this note proposes
+remedies that by prescribing that for resource records for
 standard-compliant tables, the resource type \xmlel{vs:CatalogResource}
 (against \xmlel{vs:CatalogService} of the actual TAP service) must be used.
 
@@ -347,7 +349,8 @@ is proposed here.  Hence, it is probably unavoidable to issue a new
 minor version of Obscore.
 
 In order to provide a smooth transition, the current pattern of using an
-ivoid in the embedding TAP service's \xmlel{dataModel} must be retained.
+ivoid in the embedding TAP service's \xmlel{dataModel} field in the TAP
+capability must be retained.
 In addition, a new standard for Obscore 1.2 will contain an adapted
 version of the material in sections~\ref{sect:registering-obscore}
 and~\ref{sect:finding-obscore}.
@@ -399,14 +402,14 @@ resource records may be hard to update)
 \item 245 have a TAP auxiliary standard id, 243 a full TAP id.
 \item 249 are of the type \xmlel{vs:CatalogService}, 239 of type
 \xmlel{vs:CatalogResource} (in a perfect system, there are zero or one
-\xmlel{vs:CatalogService} record per \xmlel{vs:CatalogResource} record;
+\xmlel{vs:CatalogService} records per \xmlel{vs:CatalogResource} record;
 zero would be when the TAP services comes without a tableset).
 \end{itemize}
 
-Looking somewhat closer, it turns out that only four servers (counted by
+Investigating more closely, it turns out that only four servers (counted by
 access URL) chose the \xmlel{vs:CatalogService} resource type for
 their table resource record, and only one TAP server is missing from the
-registry.  It seems entriely possible to rectify these cases on short
+registry.  It seems entriely possible to rectify these problems on short
 notice.
 
 \subsection{ObsLocTAP}
@@ -423,7 +426,7 @@ In its section~7, RegTAP~1.1 \citep{2019ivoa.spec.1011D} already offers
 two registration patterns.  One is based on \xmlel{dataType} in the TAP
 capabilities.  In the next minor version, this mechanism will be
 deprecated.  Instead, the alternative scheme, based on
-\xmlel{vg:Registry}-typed records, need to be more fully specified and
+\xmlel{vg:Registry}-typed records, needs to be more fully specified and
 advertised as the primary means of locating RegTAP searchable
 registries.   Also, since RegTAP is a complete schema, the utype to
 search will sit on the \xmlel{schema} element.
@@ -444,18 +447,23 @@ WHERE
 \end{lstlisting}
 as the canonical discovery pattern.
 
-The \xmlel{vg:Registry} resource type does not admit the
-\xmlel{coverage} child from VODataService 1.2.  Given that
+Keeping \xmlel{vg:Registry} as resource type rather than going to
+\xmlel{vs:CatalogResource} as proposed here is convenient, as it allows
+the declaration of parameters of any OAI-PMH service that may accompany
+the RegTAP endpoint.  Accepting this slight inconsistency also seems
+justified since registry discovery plays a minor role in user code.
+
+\xmlel{vg:Registry} also does not admit the declaration of
+\xmlel{coverage} as per VODataService 1.2.  Given that
 space-time coverage is not a useful concept at least for full
 registries, and the discovery of partial searchable registries (which
 conceivably could be profit from coverage declarations)
 has not been a relevant use case so
 far, this seems an acceptable deficit.
 
-At this point, there is no particular urgency for this change; the
-discovery of searchable registries is not something commonly performed
-in VO workflows, and given the (theoretical) equivalence of the RegTAP
-services, it is unlikely richer metadata an the registry records will be
+At this point, there is no particular urgency for this change;
+given the (theoretical) equivalence of the RegTAP
+services, it is unlikely richer metadata on the registry records will be
 required any time soon.
 
 
@@ -487,8 +495,7 @@ that --, an \vocterm{IsServedBy}
 relationship must also be declared from the individual collections'
 records to the Obscore record.
 
-An example for a registry record in VOResource, for the case of
-using an auxiliary capability referencing a main TAP service comes with
+An example for a registry record in VOResource comes with
 this document\footnote{\auxiliaryurl{example-record.xml}}.
 
 The noteworthy points in the record are:
@@ -557,7 +564,7 @@ WHERE
   AND res_type='vs:catalogresource'
 \end{lstlisting}
 
-The regular expression in the utype match is to make sure minor version
+The regular expression in the utype match makes sure minor version
 increments do not prevent resource discovery; by IVOA versioning rules,
 all Obscore tables of minor version 1 can be operated by all Obscore
 clients of version 1.  We do not constrain the version of the TAP
