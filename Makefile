@@ -8,7 +8,7 @@ DOCNAME = TableReg
 DOCVERSION = 1.0
 
 # Publication date, ISO format; update manually for "releases"
-DOCDATE = 2024-03-15
+DOCDATE = 2024-08-21
 
 # What is it you're writing: NOTE, WD, PR, REC, PEN, or EN
 DOCTYPE = NOTE
@@ -23,11 +23,11 @@ SOURCES = $(DOCNAME).tex
 
 # List of image files to be included in submitted package (anything that
 # can be rendered directly by common web browsers)
-FIGURES =
+FIGURES = fig-rel-sketch.tikz.tex
 
 # List of PDF figures (figures that must be converted to pixel images to
 # work in web browsers).
-VECTORFIGURES =
+VECTORFIGURES = fig-rel-sketch.tikz.svg
 
 # Additional files to distribute (e.g., CSS, schema files, examples...)
 AUX_FILES = example-record.xml
