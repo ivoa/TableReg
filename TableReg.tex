@@ -2,7 +2,6 @@
 \input tthdefs
 
 \usepackage{tikz}
-\usetikzlibrary{positioning}
 
 \lstloadlanguages{XML}
 \lstset{flexiblecolumns=true,tagstyle=\ttfamily,
@@ -90,7 +89,7 @@ system data
 \end{itemize}
 
 More such standards are currently being developed. Examples include LineTAP
-\citep{wd:linetap23} and the Obscore extension for radio data.
+\citep{wd:linetap23} and Obscore extensions for radio and high-energy data.
 
 Of course, resources complying to these standards must be made
 discoverable to be useful.  Both Obscore and RegTAP have employed the
@@ -125,7 +124,8 @@ In addition, when standards do not define ``singletons'' (i.e., a TAP
 service can only contain one instance of each
 complying table, and the tables' names are
 fixed) but instead table schemas applicable to arbitrarily-named tables,
-the discovery process also needs to yield table names.
+the discovery process also needs to yield table names, which is
+impossible using \xmlel{dataModel}.
 EPN-TAP was the first standard with such a requirement.  As a
 solution, it switched to using the table's \xmlel{utype} element in
 the VODataService \citep{2021ivoa.spec.1102D} \xmlel{tableset} for
@@ -141,7 +141,7 @@ TAP service serving the data collection (in which case the global
 metadata pertains to the TAP service and will be essentially unrelated
 to the data collection in question).
 
-The registration schema this note proposes
+The registration scheme this note proposes
 remedies that by prescribing that for resource records for
 standard-compliant tables, the resource type \xmlel{vs:CatalogResource}
 (against \xmlel{vs:CatalogService} of the actual TAP service) must be used.
@@ -247,7 +247,7 @@ course where compelling reasons exist to require features not present in
 earlier minor versions.
 
 
-\section{Expressing Relationships Between Tables and Other Resources}
+\section{Relationships Between Tables and Other Resources}
 \label{sect:rels}
 
 An important reason to enumerate resources conforming to a schema is
@@ -255,41 +255,11 @@ global discovery of whatever is described in the table; in the case of
 Obscore, this would be observational datasets.
 
 \begin{figure}
-\begin{tikzpicture}[
-service/.style={bottom color=blue!20,
-  top color=white,
-  rounded corners=1mm,
-  minimum height=6mm,
-  thin,draw=black!50,align=center,
-  node distance=4mm and 2cm,
-  node font=\footnotesize
-}]
-\node (s1) [service] {Hit Seek Observatory SIA1};
-
-\node (s2) [service, below=of s1] {Palomino Telescopes SIA1} ;
-
-\node (s3) [service, below=of s2] {Spectra of Flare Stars SSAP} ;
-
-\node (s4) [service, below=of s3] {Geas Time series};
-
-\node (s5) [service, below=of s4] {KiRASS Infrared Image Archives};
-
-\node (s6) [service, right=of s1] {SIA2 Images at the TOFU data centre};
-
-\node (s7) [service, right=of s5] {\strut TOFU data centre obscore};
-
-
-\draw [black,->] (s1) to (s6);
-\draw [black,->] (s2) to (s6);
-\draw [black,->] (s3) to (s7);
-\draw [black,->] (s4) to (s7);
-\draw [black,->] (s5) to (s7);
-\draw [black,->] (s6) to (s7);
-\end{tikzpicture}
+\tikzfigure{fig-rel-sketch}
 
 \caption{Benefits of making relationships between resources explicit.
 The nodes in this graph correspond to services, the arrows point from a
-a service to a collective service also serving the data served by the
+service to a collective service also serving the data served by the
 first service.  By evaluating the relationships, a
 client can deduce that the data published through the seven services
 can be queried by running one Obscore query on the TOFU data
@@ -369,7 +339,7 @@ already based on giving a table utype in a tableset.  It says:
 
 \begin{quotation}
 \noindent Normally, however, the
-tableset will be contained in a VODataService \xmlel{CatalogService}
+tableset will be contained in a VO\-Data\-Ser\-vice \xmlel{CatalogService}
 record with a TAP capability, and this capability will be an auxiliary
 capability as per DDC \citep{2019ivoa.spec.0520D}.  For one-table
 services, a full TAPRegExt \citep{2012ivoa.spec.0827D} capability is also
@@ -401,7 +371,7 @@ the legacy vopdc utype (which is probably a good measure for how many
 resource records may be hard to update)
 \item 245 have a TAP auxiliary standard id, 243 a full TAP id.
 \item 249 are of the type \xmlel{vs:CatalogService}, 239 of type
-\xmlel{vs:CatalogResource} (in a perfect system, there are zero or one
+\xmlel{vs:Catalog\-Re\-source} (in a perfect system, there are zero or one
 \xmlel{vs:CatalogService} records per \xmlel{vs:CatalogResource} record;
 zero would be when the TAP services comes without a tableset).
 \end{itemize}
@@ -423,7 +393,7 @@ erratum.
 \subsection{RegTAP}
 
 In its section~7, RegTAP~1.1 \citep{2019ivoa.spec.1011D} already offers
-two registration patterns.  One is based on \xmlel{dataType} in the TAP
+two registration patterns.  One is based on \xmlel{dataModel} in the TAP
 capabilities.  In the next minor version, this mechanism will be
 deprecated.  Instead, the alternative scheme, based on
 \xmlel{vg:Registry}-typed records, needs to be more fully specified and
@@ -447,8 +417,8 @@ WHERE
 \end{lstlisting}
 as the canonical discovery pattern.
 
-Keeping \xmlel{vg:Registry} as resource type rather than going to
-\xmlel{vs:CatalogResource} as proposed here is convenient, as it allows
+Keeping \xmlel{vg:Registry} as resource type rather than moving to
+\xmlel{vs:Ca\-ta\-log\-Resource} as proposed here is convenient, as it allows
 the declaration of parameters of any OAI-PMH service that may accompany
 the RegTAP endpoint.  Accepting this slight inconsistency also seems
 justified since registry discovery plays a minor role in user code.
@@ -507,7 +477,7 @@ through which the service is queriable as per DDC:
 <relationship>
   <relationshipType>IsServedBy</relationshipType>
   <relatedResource ivo-id="ivo://org.gavo.dc/tap"
-    >GAVO Data Center TAP service</relatedResource>
+    >GAVO Data Centre TAP service</relatedResource>
 </relationship>
 \end{lstlisting}
 
@@ -527,9 +497,9 @@ clients discover that this particular table contains Obscore data:
 \begin{lstlisting}[language=XML,basicstyle=\footnotesize]
 <table>
   <name>ivoa.obscore</name>
-  <title>GAVO Data Center Obscore Table</title>
+  <title>GAVO Data Centre Obscore Table</title>
   <description>The IVOA-defined obscore table, containing generic
-  metadata for datasets within this datacenter.</description>
+  metadata for datasets within this data centre.</description>
   <utype>ivo://ivoa.net/std/obscore#table-1.1</utype>
   ...
 </table>
@@ -542,7 +512,7 @@ clients discover that this particular table contains Obscore data:
 Obscore clients in general are interested in TAP endpoints serving Obscore
 tables as well as the table's metadata, such as its coverage in space,
 time, and spectrum.  By the  registration pattern given in
-\ref{sect:registering-obscore}, this translates into resources with TAP
+Sect.~\ref{sect:registering-obscore}, this translates into resources with TAP
 (auxiliary) capabilities that have a standard key for version 1 Obscore
 in a table utype; this will normally also match the TAP service record
 itself (as it generally also gives the tableset). Therefore, an

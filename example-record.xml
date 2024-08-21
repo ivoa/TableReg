@@ -8,18 +8,18 @@
 		updated="2024-02-06T10:19:33Z"
 		status="active"
 		xsi:type="vs:CatalogResource">
-  <title>GAVO Data Center Obscore Table</title>
+  <title>GAVO Data Centre Obscore Table</title>
   <shortName>GAVO DC Obscore</shortName>
   <identifier>ivo://org.gavo.dc/__system__/obscore/ObsCore</identifier>
   <curation>
     <publisher>The GAVO DC team</publisher>
     <creator>
-      <name>GAVO Data Center</name>
+      <name>GAVO Data Centre</name>
       <logo>http://vo.ari.uni-heidelberg.de/docs/GavoTiny.png</logo>
     </creator>
     <date role="updated">2022-08-18T12:56:24Z</date>
     <contact>
-      <name>GAVO Data Center Team</name>
+      <name>GAVO Data Centre Team</name>
       <address>Mönchhofstrasse 12-14, D-69120 Heidelberg</address>
       <email>gavo@ari.uni-heidelberg.de</email>
       <telephone>++49 6221 54 1837</telephone>
@@ -28,12 +28,12 @@
   <content>
     <subject>observational-astronomy</subject>
     <description>The IVOA-defined obscore table, containing generic metadata
-    for datasets within this datacenter.</description>
+    for datasets within this data centre.</description>
     <referenceURL>http://dc.zah.uni-heidelberg.de/tableinfo/ivoa.ObsCore</referenceURL>
     <relationship>
       <relationshipType>IsServedBy</relationshipType>
       <relatedResource
-      	ivo-id="ivo://org.gavo.dc/tap">GAVO Data Center TAP service</relatedResource>
+      	ivo-id="ivo://org.gavo.dc/tap">GAVO Data Centre TAP service</relatedResource>
     </relationship>
   </content>
   <capability standardID="ivo://ivoa.net/std/TAP#aux">
@@ -54,9 +54,9 @@
       table.</description>
       <table>
         <name>ivoa.obscore</name>
-        <title>GAVO Data Center Obscore Table</title>
+        <title>GAVO Data Centre Obscore Table</title>
         <description>The IVOA-defined obscore table, containing generic
-        metadata for datasets within this datacenter.</description>
+        metadata for datasets within this data centre.</description>
         <utype>ivo://ivoa.net/std/obscore#table-1.1</utype>
         <nrows>84947229</nrows>
         <column>
