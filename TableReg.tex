@@ -405,13 +405,13 @@ search will sit on the \xmlel{schema} element.
 Against the pattern given in sect.~\ref{sect:finding-obscore}, we would hence
 give
 \begin{lstlisting}[language=SQL]
-SELECT DISTINCT table_name, access_url
-FROM rr.res_table
-  NATURAL JOIN rr.capability
+SELECT DISTINCT schema_name, access_url
+FROM rr.capability
   NATURAL JOIN rr.interface
   NATURAL JOIN rr.resource
+  NATURAL JOIN rr.res_schema
 WHERE
-  table_utype LIKE 'ivo://ivoa.net/std/regtap#table-1.%'
+  schema_utype LIKE 'ivo://ivoa.net/std/regtap#1.%'
   AND standard_id LIKE 'ivo://ivoa.net/std/tap%'
   AND intf_role='std'
   AND res_type='vg:registry'
