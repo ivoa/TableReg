@@ -5,10 +5,10 @@
 DOCNAME = TableReg
 
 # count up; you probably do not want to bother with versions <1.0
-DOCVERSION = 1.0
+DOCVERSION = 1.1
 
 # Publication date, ISO format; update manually for "releases"
-DOCDATE = 2024-08-21
+DOCDATE = 2025-04-25
 
 # What is it you're writing: NOTE, WD, PR, REC, PEN, or EN
 DOCTYPE = NOTE
@@ -32,6 +32,8 @@ VECTORFIGURES = fig-rel-sketch.tikz.svg
 # Additional files to distribute (e.g., CSS, schema files, examples...)
 AUX_FILES = example-record.xml
 
+DOCREPO_BASEURL=http://ivoa.net/documents/Notes/TableReg
+
 -include ivoatex/Makefile
 
 ivoatex/Makefile:
@@ -39,7 +41,11 @@ ivoatex/Makefile:
 	@echo
 	git submodule update --init
 
+STILTS ?= stilts
+
 # These tests need stilts >3.4
 test:
-	@$(STILTS) xsdvalidate example-record.xml
+	@$(STILTS) xsdvalidate \
+		schemaloc="http://www.ivoa.net/xml/VODataService/v1.1=http://www.ivoa.net/xml/VODataService/v1.1" \
+		example-record.xml
 
