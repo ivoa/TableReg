@@ -5,8 +5,8 @@
 \usepackage{tikz}
 
 \lstloadlanguages{XML}
-\lstset{flexiblecolumns=true,tagstyle=\ttfamily,
-showstringspaces=False,basicstyle=\footnotesize}
+\lstset{flexiblecolumns=true,
+showstringspaces=False,basicstyle=\footnotesize\ttfamily}
 
 \definecolor{termcolor}{rgb}{0.6,0.1,0.1}
 \iftth
@@ -35,7 +35,7 @@ Schemas}
 
 \editor{Markus Demleitner}
 
-\previousversion{This is the first public release}
+\previousversion[http://ivoa.net/documents/Notes/TableReg/20240821]{Version 1.0}
 
 
 \begin{document}
@@ -184,7 +184,7 @@ for doing so independently of the full version tag.
 
 Hence, the VODataService \xmlel{table} element for a table conforming to
 Obscore 1.2 would begin like this:
-\begin{lstlisting}[language=XML]
+\begin{lstlisting}
 <table>
   <name>ivoa.obscore</name>
   <title>Obscore Table in the Fictional Data Centre</title>
@@ -196,7 +196,7 @@ Obscore 1.2 would begin like this:
   ...
 \end{lstlisting}
 where Obscore's StandardsRegExt record contains a fragment:
-\begin{lstlisting}[language=XML]
+\begin{lstlisting}
 <key>
   <name>table-1.2</name>
   <description>The data model for a table conforming to version 1.2
@@ -450,7 +450,7 @@ the Registry sections of similar standards.
 \label{sect:registering-obscore}
 
 Obscore tables are registered using VODataService
-\citep{2010ivoa.spec.1202P} tablesets, where the table utype is set to
+\citep{2021ivoa.spec.1102D} tablesets, where the table utype is set to
 $$\hbox{\verb|ivo://ivoa.net/std/obscore#table-1.2|}.$$
 
 The tableset is contained in a resource record of the VODataService type
@@ -488,7 +488,8 @@ all they need is the access URL:
 \begin{lstlisting}[language=XML,basicstyle=\footnotesize]
 <capability standardID="ivo://ivoa.net/std/TAP#aux">
    <interface role="std" version="1.1" xsi:type="vs:ParamHTTP">
-     <accessURL use="base">http://dc.zah.uni-heidelberg.de/tap</accessURL>
+     <accessURL use="base"
+      >http://dc.zah.uni-heidelberg.de/tap</accessURL>
    </interface>
 </capability>
 \end{lstlisting}
@@ -561,13 +562,11 @@ that allow for flexible table names.
 \appendix
 \section{Changes from Previous Versions}
 
-No previous versions yet.
-% these would be subsections "Changes from v. WD-..."
-% Use itemize environments.
+\subsection{Changes from Version 1.0}
 
+Fixed the RegTAP discovery query, which for that multi-table DM of
+course needs to use the schema utype.
 
-% NOTE: IVOA recommendations must be cited from docrepo rather than ivoabib
-% (REC entries there are for legacy documents only)
 \bibliography{ivoatex/ivoabib,ivoatex/docrepo,local}
 
 
